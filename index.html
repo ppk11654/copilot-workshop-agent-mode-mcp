@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>待辦清單</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="card">
+    <h1>待辦清單</h1>
+    <div class="input-group">
+      <input type="text" id="todo-input" placeholder="輸入待辦事項...">
+      <button id="add-btn">新增</button>
+    </div>
+    <ul id="todo-list"></ul>
+    <p id="empty-msg" class="empty">還沒有任何待辦事項,新增一個吧!</p>
+    <div class="footer">
+      未完成:<span id="count">0</span> 項
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

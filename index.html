@@ -4,14 +4,249 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>待辦清單</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* 根目錄色彩變數(淺色模式) */
+    :root {
+      --bg-color: #f5f7fa;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --text-muted: #666666;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --border: #e5e7eb;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 深色模式色彩變數 */
+    [data-theme="dark"] {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --danger: #f87171;
+      --danger-hover: #ef4444;
+      --border: #334155;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 14px;
+      background: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .theme-btn:hover {
+      background: var(--border);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    #todo-input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    #todo-input:focus {
+      border-color: var(--primary);
+    }
+
+    #add-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #add-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      background: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      background: var(--border);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    #todo-list {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      background: var(--card-bg);
+    }
+
+    .todo-item .content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .todo-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .todo-item span {
+      font-size: 16px;
+    }
+
+    .todo-item.completed span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .delete-btn:hover {
+      background: #fee2e2;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 20px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* RWD: 手機螢幕 */
+    @media (max-width: 480px) {
+      .card {
+        padding: 16px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="card">
-    <h1>待辦清單</h1>
+    <header class="header">
+      <h1>待辦清單</h1>
+      <button id="theme-btn" class="theme-btn" aria-label="切換主題">🌙 深色模式</button>
+    </header>
     <div class="input-group">
       <input type="text" id="todo-input" placeholder="輸入待辦事項...">
       <button id="add-btn">新增</button>
+    </div>
+    <div class="filter-group">
+      <button class="filter-btn" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="active">未完成</button>
+      <button class="filter-btn" data-filter="completed">已完成</button>
     </div>
     <ul id="todo-list"></ul>
     <p id="empty-msg" class="empty">還沒有任何待辦事項,新增一個吧!</p>
@@ -19,6 +254,175 @@
       未完成:<span id="count">0</span> 項
     </div>
   </div>
-  <script src="app.js"></script>
+  <script>
+    // 待辦清單資料,每筆包含 id、文字、完成狀態
+    let todos = [];
+
+    // 目前篩選條件: all / active / completed
+    let filter = 'all';
+
+    // DOM 元素
+    const inputEl = document.getElementById('todo-input');
+    const addBtnEl = document.getElementById('add-btn');
+    const listEl = document.getElementById('todo-list');
+    const emptyEl = document.getElementById('empty-msg');
+    const countEl = document.getElementById('count');
+    const themeBtnEl = document.getElementById('theme-btn');
+    const filterBtnEls = document.querySelectorAll('.filter-btn');
+
+    // 根據篩選條件取得要顯示的待辦
+    function getFilteredTodos() {
+      if (filter === 'active') {
+        return todos.filter(t => !t.completed);
+      }
+      if (filter === 'completed') {
+        return todos.filter(t => t.completed);
+      }
+      return todos;
+    }
+
+    // 重新渲染清單
+    function render() {
+      listEl.innerHTML = '';
+
+      const filtered = getFilteredTodos();
+
+      const uncompleted = todos.filter(t => !t.completed).length;
+      countEl.textContent = uncompleted;
+
+      if (filtered.length === 0) {
+        emptyEl.style.display = 'block';
+        // 根據篩選條件顯示不同提示文字
+        if (filter === 'active') {
+          emptyEl.textContent = '沒有未完成的待辦事項!';
+        } else if (filter === 'completed') {
+          emptyEl.textContent = '沒有已完成的待辦事項!';
+        } else {
+          emptyEl.textContent = '還沒有任何待辦事項,新增一個吧!';
+        }
+      } else {
+        emptyEl.style.display = 'none';
+        filtered.forEach(todo => {
+          const li = document.createElement('li');
+          li.className = `todo-item${todo.completed ? ' completed' : ''}`;
+
+          li.innerHTML = `
+            <div class="content">
+              <input type="checkbox" ${todo.completed ? 'checked' : ''}>
+              <span>${escapeHtml(todo.text)}</span>
+            </div>
+            <button class="delete-btn" data-id="${todo.id}">刪除</button>
+          `;
+
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          checkbox.addEventListener('change', () => toggleTodo(todo.id));
+
+          const deleteBtn = li.querySelector('.delete-btn');
+          deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
+
+          listEl.appendChild(li);
+        });
+      }
+
+      // 更新篩選按鈕的選中樣式
+      filterBtnEls.forEach(btn => {
+        if (btn.dataset.filter === filter) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // 新增待辦
+    function addTodo() {
+      const text = inputEl.value.trim();
+      if (text === '') {
+        return; // 輸入空白內容時不新增
+      }
+
+      const newTodo = {
+        id: Date.now(),
+        text: text,
+        completed: false
+      };
+
+      todos.push(newTodo);
+      render();
+      inputEl.value = '';
+      inputEl.focus();
+    }
+
+    // 切換完成狀態
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        render();
+      }
+    }
+
+    // 刪除待辦
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);
+      render();
+    }
+
+    // 切換深色/淺色模式(不儲存,重新整理後預設跟隨作業系統)
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      updateThemeBtn(newTheme);
+    }
+
+    // 根據主題更新按鈕圖示與文字
+    function updateThemeBtn(theme) {
+      if (theme === 'dark') {
+        themeBtnEl.textContent = '☀️ 淺色模式';
+      } else {
+        themeBtnEl.textContent = '🌙 深色模式';
+      }
+    }
+
+    // 初始化主題:跟隨作業系統的深淺色設定
+    function initTheme() {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeBtn('dark');
+      } else {
+        updateThemeBtn('light');
+      }
+    }
+
+    // 簡單的 HTML 轉義,避免 XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 綁定事件
+    addBtnEl.addEventListener('click', addTodo);
+
+    inputEl.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addTodo();
+      }
+    });
+
+    themeBtnEl.addEventListener('click', toggleTheme);
+
+    filterBtnEls.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    // 初始化
+    initTheme();
+    render();
+  </script>
 </body>
 </html>

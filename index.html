@@ -275,11 +275,16 @@
     </div>
   </div>
   <script>
+    // 儲存鍵名
+    const FILTER_KEY = 'filter';
+
     // 待辦清單資料,每筆包含 id、文字、完成狀態
     let todos = [];
 
     // 目前篩選條件: all / active / completed
-    let filter = 'all';
+    // 初始化時從 localStorage 讀取,若無效則預設為 'all'
+    const savedFilter = localStorage.getItem(FILTER_KEY);
+    let filter = ['all', 'active', 'completed'].includes(savedFilter) ? savedFilter : 'all';
 
     // DOM 元素
     const inputEl = document.getElementById('todo-input');
@@ -463,6 +468,7 @@
     filterBtnEls.forEach(btn => {
       btn.addEventListener('click', () => {
         filter = btn.dataset.filter;
+        localStorage.setItem(FILTER_KEY, filter);
         render();
       });
     });

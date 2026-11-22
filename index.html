@@ -222,6 +222,25 @@
       border-top: 1px solid var(--border);
     }
 
+    .clear-completed-btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      background: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .clear-completed-btn:hover:not(:disabled) {
+      background: var(--border);
+    }
+
+    .clear-completed-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* RWD: 手機螢幕 */
     @media (max-width: 480px) {
       .card {
@@ -252,6 +271,7 @@
     <p id="empty-msg" class="empty">還沒有任何待辦事項,新增一個吧!</p>
     <div class="footer">
       未完成:<span id="count">0</span> 項
+      <button id="clear-completed-btn" class="clear-completed-btn" type="button" aria-label="清除所有已完成的待辦事項">清除已完成</button>
     </div>
   </div>
   <script>
@@ -269,6 +289,7 @@
     const countEl = document.getElementById('count');
     const themeBtnEl = document.getElementById('theme-btn');
     const filterBtnEls = document.querySelectorAll('.filter-btn');
+    const clearCompletedBtnEl = document.getElementById('clear-completed-btn');
 
     // 根據篩選條件取得要顯示的待辦
     function getFilteredTodos() {
@@ -332,6 +353,14 @@
           btn.classList.remove('active');
         }
       });
+
+      // 顯示或隱藏「清除已完成」按鈕
+      const hasCompleted = todos.some(t => t.completed);
+      if (hasCompleted) {
+        clearCompletedBtnEl.hidden = false;
+      } else {
+        clearCompletedBtnEl.hidden = true;
+      }
     }
 
     // 新增待辦
@@ -365,6 +394,22 @@
     // 刪除待辦
     function deleteTodo(id) {
       todos = todos.filter(t => t.id !== id);
+      render();
+    }
+
+    // 清除所有已完成的待辦
+    function clearCompletedTodos() {
+      const hasCompleted = todos.some(t => t.completed);
+      if (!hasCompleted) {
+        return;
+      }
+
+      // 不可逆操作,先跳出確認對話框
+      if (!confirm('確定要清除所有已完成的待辦事項嗎?')) {
+        return;
+      }
+
+      todos = todos.filter(t => !t.completed);
       render();
     }
 
@@ -412,6 +457,8 @@
     });
 
     themeBtnEl.addEventListener('click', toggleTheme);
+
+    clearCompletedBtnEl.addEventListener('click', clearCompletedTodos);
 
     filterBtnEls.forEach(btn => {
       btn.addEventListener('click', () => {
